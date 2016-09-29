@@ -2,6 +2,8 @@ require 'open-uri'
 require 'csv'
 require 'sqlite3'
 
+require_relative 'loader'
+
 class Extractor
 
   def initialize(url = "https://data.cityofnewyork.us/api/views/43nn-pn8j/rows.csv?accessType=DOWNLOAD")
@@ -9,7 +11,13 @@ class Extractor
     @results = []
   end
 
-  def download_records
+  def extract_transform_and_load
+    extract
+    transform
+    load_into_db
+  end
+
+  def extract
     File.open("temp.csv", "wb") do |saved_file|
       puts 'downloading, please be patient as this may take a few minutes...'
       open(@url, "rb") do |read_file|
@@ -19,12 +27,17 @@ class Extractor
     end
   end
 
-  def build_results_array
+  def transform
     puts "scanning records and distilling data"
-    CSV.foreach("temp.csv", :headers => true) do |csv_obj|
+    CSV.foreach("temp.csv", :headers => true, :header_converters => lambda { |h| h.downcase.gsub(' ', '_') }) do |csv_obj|
       @results << transform_data(csv_obj.to_h)
     end
-    puts "completed building array of #{@results.length} records."
+    puts "completed extracting #{@results.length} records."
+  end
+
+  def load_into_db
+    loader = Loader.new(@results)
+    loader.update_database
   end
 
   def transform_data(row)
@@ -35,19 +48,11 @@ class Extractor
   end
 
   def sanitize_input(row)
-    row.each do |k,v|
-      v ||= "NULL"
-      v.gsub("'", "''")
-      k.gsub(" ", "_")
-    end
+    row.each { |k,v| row[k] =  v ? v.gsub("'", "''") : "NULL" }
   end
 
   def add_full_address(row)
-    row['ADDRESS'] = "#{row['BUILDING']} #{row['STREET']} #{row['BORO']}, NY #{row['ZIPCODE']}"
+    row['address'] = "#{row['building']} #{row['street']} #{row['boro']}, NY #{row['zipcode']}"
   end
 
 end
-
-extractor = Extractor.new()
-# extractor.download_records
-extractor.build_results_array
