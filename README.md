@@ -11,7 +11,7 @@ and then:
 `ruby etl.rb`
 
 #### Design considerations
-I tried to keep this ETL as flexible as possible, allowing to just edit `Loader#setup_db` with the columns needed. `Loader.rb` dynamically creates the `insert or replace` purely based on the data passed into it. With a quick addition to the extractor to filter only certain keys one would be able to only store requested columns. The following code would need to be added to the extractor:
+I tried to keep this ETL as flexible as possible, allowing to just edit `Loader#setup_db` with the columns needed. `Loader.rb` dynamically creates the `insert` purely based on the data passed into it. With a quick addition to the extractor to filter only certain keys one would be able to only store requested columns. The following code would need to be added to the extractor:
 
 ```
   def transform_data(row)
