@@ -10,30 +10,30 @@ class Loader
     puts 'creating database.'
     SQLite3::Database.new( "development.sqlite3" ) do |db|
       db.execute(
-        "CREATE TABLE `dohmh_inspections` (
-          `camis` int(10) NOT NULL,
-          `dba` varchar(255) DEFAULT NULL,
-          `address` varchar(255) DEFAULT NULL,
-          `boro` varchar(255) DEFAULT NULL,
-          `building` int(10) NOT NULL,
-          `street` varchar(255) DEFAULT NULL,
-          `zipcode` int(10) NOT NULL,
-          `phone` varchar(10) DEFAULT NULL,
-          `action` varchar(255) DEFAULT NULL,
-          `violation_code` varchar(255) DEFAULT NULL,
-          `violation_description` varchar(255) DEFAULT NULL,
-          `critical_flag` varchar(255) DEFAULT NULL,
-          `cuisine_description` varchar(255) DEFAULT NULL,
-          `inspection_date` timestamp NOT NULL,
-          `score` int(10) DEFAULT NULL,
-          `grade` varchar(10) DEFAULT NULL,
-          `grade_date` timestamp DEFAULT NULL,
-          `inspection_type` varchar(255) DEFAULT NULL,
-          `record_date` timestamp DEFAULT NULL,
-          `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          PRIMARY KEY (camis, inspection_date, violation_code)
-        );")
+      "CREATE TABLE `dohmh_inspections` (
+        `camis` int(10) NOT NULL,
+        `dba` varchar(255) DEFAULT NULL,
+        `address` varchar(255) DEFAULT NULL,
+        `boro` varchar(255) DEFAULT NULL,
+        `building` int(10) NOT NULL,
+        `street` varchar(255) DEFAULT NULL,
+        `zipcode` int(10) NOT NULL,
+        `phone` varchar(10) DEFAULT NULL,
+        `action` varchar(255) DEFAULT NULL,
+        `violation_code` varchar(255) DEFAULT NULL,
+        `violation_description` varchar(255) DEFAULT NULL,
+        `critical_flag` varchar(255) DEFAULT NULL,
+        `cuisine_description` varchar(255) DEFAULT NULL,
+        `inspection_date` date NOT NULL,
+        `score` int(10) DEFAULT NULL,
+        `grade` varchar(10) DEFAULT NULL,
+        `grade_date` date DEFAULT NULL,
+        `inspection_type` varchar(255) DEFAULT NULL,
+        `record_date` date DEFAULT NULL,
+        `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (camis, inspection_date, violation_code)
+      );")
     end
   end
 

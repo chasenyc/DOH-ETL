@@ -48,6 +48,9 @@ class Extractor
   end
 
   def sanitize_input(row)
+    row['inspection_date'] = row['inspection_date'] ? Date.strptime(row['inspection_date'], '%m/%d/%Y').to_s : row['inspection_date']
+    row['grade_date'] = row['grade_date'] ? Date.strptime(row['grade_date'], '%m/%d/%Y').to_s : row['grade_date']
+    row['record_date'] = row['record_date'] ? Date.strptime(row['record_date'], '%m/%d/%Y').to_s : row['record_date']
     row.each { |k,v| row[k] =  v ? v.gsub("'", "''") : "NULL" }
   end
 
