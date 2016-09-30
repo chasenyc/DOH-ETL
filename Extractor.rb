@@ -28,12 +28,13 @@ class Extractor
   end
 
   def transform
-    puts "scanning records and transforming data"
+    puts "transforming data and loading into database"
     CSV.foreach("temp.csv", :headers => true, :header_converters => lambda { |h| h.downcase.gsub(' ', '_') }) do |csv_obj|
       @results << transform_data(csv_obj.to_h)
       load_into_db if @results.length > 2000
     end
     File.delete("temp.csv")
+    puts "process complete"
   end
 
   def load_into_db
