@@ -11,6 +11,7 @@ class Loader
     SQLite3::Database.new( "development.sqlite3" ) do |db|
       db.execute(
       "CREATE TABLE `dohmh_inspections` (
+        `id` INTEGER PRIMARY KEY AUTOINCREMENT,
         `camis` int(10) NOT NULL,
         `dba` varchar(255) DEFAULT NULL,
         `address` varchar(255) DEFAULT NULL,
@@ -31,8 +32,7 @@ class Loader
         `inspection_type` varchar(255) DEFAULT NULL,
         `record_date` date DEFAULT NULL,
         `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        PRIMARY KEY (camis, inspection_date, violation_code)
+        `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
       );")
     end
   end
@@ -52,7 +52,6 @@ class Loader
   end
 
   def update_database
-    puts 'inserting records into database.'
     SQLite3::Database.new( "development.sqlite3" ) do |db|
       record_values.each_slice(100) do |chunk|
         db.execute("INSERT OR REPLACE INTO dohmh_inspections

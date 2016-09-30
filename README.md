@@ -30,7 +30,7 @@ I tried to keep this ETL as flexible as possible, allowing to just edit `Loader#
     row.select! { |k, v| @columns.include?(k) }
   end
 ```
-When it came to the choice of database and its design I went with sqlite for fairly simple reasons, it is fast and it is convenient for transferring to another project. I chose not to include an auto-incrementing primary key id and rather opted to have a composite primary key of `camis`(the restaurants unique identifier), `inspection_date`, and `violation_code`. The assumption is that no restaurant will receive the same violation code on the same date more than once. By using this composite primary key it allows my `Loader.rb` to remain fairly idempotent when utilizing `insert or replace`.
+When it came to the choice of database and its design I went with sqlite for fairly simple reasons, it is fast and it is convenient for transferring to another project. I ensure that I do not use too much memory by splitting the database loading into chunks. I would have liked to have found a composite key that I could ensure was unique to a record but found that my assumptions that there could only be one `violation_code` per `camis` on a specific `inspection_date` was inaccurate. The downside to not having a composite key that still allows all records to be entered is that if this ETL were to be run multiple times on the same database there would be duplicated data.
 
 I would have also liked to add some cli progress bars as these processes do tend to take some time; however, I decided my time was better spent elsewhere.
 
@@ -41,6 +41,7 @@ Below is the schema for `database.db` which contains one table:
 
 column name  | data type | details
 -------------|-----------|----------------------
+`id`   | int | PRIMARY KEY, AUTOINCREMENT
 `camis` | int(10) | NOT NULL
 `dba` | varchar(255) | DEFAULT NULL
 `address` | varchar(255) | DEFAULT NULL
@@ -62,4 +63,3 @@ column name  | data type | details
 `record_date` | timestamp | DEFAULT NULL
 `created_at` | timestamp | NOT NULL, DEFAULT CURRENT_TIMESTAMP
 `updated_at` | timestamp | NOT NULL, DEFAULT CURRENT_TIMESTAMP
-`PRIMARY KEY (camis, inspection_date, violation_code)`
