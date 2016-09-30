@@ -28,10 +28,11 @@ class Extractor
   end
 
   def transform
-    puts "scanning records and distilling data"
+    puts "scanning records and transforming data"
     CSV.foreach("temp.csv", :headers => true, :header_converters => lambda { |h| h.downcase.gsub(' ', '_') }) do |csv_obj|
       @results << transform_data(csv_obj.to_h)
     end
+    File.delete("temp.csv")
     puts "completed extracting #{@results.length} records."
   end
 
